@@ -38,11 +38,9 @@ namespace RobotJobViewWebService
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite("Data Source=web.db"));
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {

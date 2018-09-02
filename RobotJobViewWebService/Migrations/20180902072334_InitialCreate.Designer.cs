@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RobotJobViewWebService.Data;
 
-namespace RobotJobViewWebService.Data.Migrations
+namespace RobotJobViewWebService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180902072334_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,6 +179,48 @@ namespace RobotJobViewWebService.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("RobotJobViewWebService.Models.Job", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Arg");
+
+                    b.Property<DateTime>("CreateTime");
+
+                    b.Property<DateTime>("EndTime");
+
+                    b.Property<string>("JobName");
+
+                    b.Property<string>("Status");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("User");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Job");
+                });
+
+            modelBuilder.Entity("RobotJobViewWebService.Models.Result", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("JobID");
+
+                    b.Property<string>("filelocalpath");
+
+                    b.Property<string>("filename");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("JobID");
+
+                    b.ToTable("Result");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -220,6 +264,13 @@ namespace RobotJobViewWebService.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("RobotJobViewWebService.Models.Result", b =>
+                {
+                    b.HasOne("RobotJobViewWebService.Models.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobID");
                 });
 #pragma warning restore 612, 618
         }
