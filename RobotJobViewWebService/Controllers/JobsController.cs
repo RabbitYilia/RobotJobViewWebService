@@ -11,6 +11,7 @@ using RobotJobViewWebService.Models;
 
 namespace RobotJobViewWebService.Controllers
 {
+    [Authorize]
     public class JobsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +22,6 @@ namespace RobotJobViewWebService.Controllers
         }
 
         // GET: Jobs
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             string UserName = HttpContext.User.Identity.Name;
@@ -29,7 +29,6 @@ namespace RobotJobViewWebService.Controllers
         }
 
         // GET: Jobs/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,7 +54,6 @@ namespace RobotJobViewWebService.Controllers
         }
 
         // GET: Jobs/Create
-        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -66,7 +64,6 @@ namespace RobotJobViewWebService.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Create([Bind("JobName,Type,Arg")] Job job)
         {
             if (ModelState.IsValid)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using RobotJobViewWebService.Models;
 
 namespace RobotJobViewWebService
 {
+    [Authorize]
     public class ResultsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,12 +37,16 @@ namespace RobotJobViewWebService
 
             var result = await _context.Result
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (result == null)
             {
                 return NotFound();
             }
 
-            return View(result);
+            var localpath = result.filelocalpath.ToString();
+            var filename = result.filename;
+            HttpContext.Response.Headers.Add("Content-Disposition", $"attachment; filename = \"{filename}\"");
+            return File(System.IO.File.OpenRead(localpath), "application/octet-stream");
         }
 
         // GET: Results/Create
