@@ -29,6 +29,7 @@ namespace RobotJobViewWebService.Controllers
         }
 
         // GET: Jobs/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,7 +43,14 @@ namespace RobotJobViewWebService.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["HasResult"] = "false";
+            if (_context.Result.Any(s => s.Job == job))
+            {
+                ViewData["HasResult"] = "true";
+                var result = await _context.Result.FirstOrDefaultAsync(s => s.Job == job);
+                ViewData["ResultID"] = result.ID.ToString();
+                ViewData["FileName"] = result.filename.ToString();
+            }
             return View(job);
         }
 
@@ -151,6 +159,11 @@ namespace RobotJobViewWebService.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var job = await _context.Job.FindAsync(id);
+            var result = await _context.Result.Where(s=>s.Job==job).ToListAsync();
+            foreach (var thisresult in result)
+            {
+                _context.Result.Remove(thisresult);
+            }
             _context.Job.Remove(job);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
